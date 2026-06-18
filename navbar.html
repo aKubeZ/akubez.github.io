@@ -1,0 +1,29 @@
+<div class="navbar">
+    <div class="tab" id="tab1">
+        main
+    </div>
+    <div class="tab" id="tab2">
+        stuff
+    </div>
+    <div class="tab" id="tab3">
+        doing
+    </div>
+</div>
+
+<script>
+    const mainTabButton = document.getElementById('tab1');
+    const stuffTabButton = document.getElementById('tab2');
+    const doingTabButton = document.getElementById('tab3');
+
+    mainTabButton.addEventListener('click', (event) => {
+        location.href = '/index.html';
+    });
+
+    stuffTabButton.addEventListener('click', (event) => {
+        location.href = '/stuff.html';
+    });
+
+    doingTabButton.addEventListener('click', (event) => {
+        location.href = '/doing.html';
+    });
+</script>

@@ -1,0 +1,57 @@
+#coolbg {
+    background: linear-gradient(to right, #0ff, #0f9);
+    padding-top: 100px;
+    padding-bottom: 100px;
+    color: #000;
+    width: 100%;
+}
+
+#coolperspective {
+    background: linear-gradient(to right, #f00, #f70);
+    padding: 50px;
+    font-style: oblique;
+    font-weight: 1000;
+    font-size: 30pt;
+    width: 10%;
+    animation: rotate 0.5s linear infinite;
+}
+
+.page {
+    perspective: 5cm;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate3d(0, 0, 0, 0deg);
+        color: #f00;
+    }
+
+    16.67% {
+        color: #ff0;
+    }
+
+    33.33% {
+        color: #0f0;
+    }
+
+    50% {
+        color: #0ff;
+    }
+
+    66.67% {
+        color: #00f;
+    }
+
+    83.33% {
+        color: #f0f;
+    }
+
+    100% {
+        transform: rotate3d(1, 1, 1, 360deg);
+        color: #f00;
+    }
+}
