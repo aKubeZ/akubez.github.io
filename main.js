@@ -1,5 +1,5 @@
-let loaded = false;
+// let loaded = false;
 
-document.addEventListener('DOMContentLoaded', (event) => {loaded = true});
+// document.addEventListener('DOMContentLoaded', (event) => {loaded = true});
 
-const url = location.origin;
+// const url = location.origin;

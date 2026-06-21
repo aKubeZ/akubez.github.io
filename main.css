@@ -2,14 +2,23 @@ body, html {
     background-color: #000;
     height: 100%;
     width: 100%;
+    /* overflow: hidden; */
+}
+
+body {
+    display: flex;
+    flex-direction: column;
 }
 
 * {
     color: white;
     font-family: sans-serif;
     font-size: 14pt;
-    margin: 0;
+    margin: auto;
+    width: fit-content;
     text-align: center;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 :focus {
@@ -19,16 +28,59 @@ body, html {
 
 .navbar {
     display: grid;
-    grid-template-columns: repeat(67, 100px);
+    grid-template-columns: repeat(4, 100px);
+    margin-left: 0;
+    width: 100%;
     background-color: #111;
 }
 
 .tab {
     padding: 5px;
+    width: auto;
+    margin: 0;
     margin-left: 10px;
     background-color: #123;
     border-bottom: 2px solid #fff;
     &:hover {
         cursor: pointer;
     }
+}
+
+.object {
+    background-color: #fff;
+    z-index: 67;
+    color: #000;
+    /* position: absolute; */
+    position: fixed;
+    &:hover {
+        cursor: grab;
+    }
+}
+
+.container {
+    flex-grow: 1;
+    width: auto;
+    margin: 0;
+    justify-content: flex-start;
+}
+
+.objectifier {
+    width: 100px;
+    height: 100px;
+    background-color: #f06;
+    color: #0f9;
+    position: absolute;
+    bottom: 67px;
+    right: 67px;
+    box-shadow:
+        0px 0px 100px 0px #fff;
+}
+
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }

@@ -1,3 +1,7 @@
+/*
+        WHY THE HELL IS CSS HARDER THAN MAKING A COLLISION ENGINE THING IN JAVASCRIPT ITS LIT 5AM I CANT GET IT TO WORK
+*/
+
 #coolbg {
     background: linear-gradient(to right, #0ff, #0f9);
     padding-top: 100px;
@@ -7,17 +11,24 @@
 }
 
 #coolperspective {
+    /* transform: perspective(5cm); */
+    /* perspective: 5cm; */
     background: linear-gradient(to right, #f00, #f70);
     padding: 50px;
     font-style: oblique;
     font-weight: 1000;
     font-size: 30pt;
-    width: 10%;
+    width: 100px;
     animation: rotate 0.5s linear infinite;
 }
 
-.page {
+#coolperspectivewrapper {
     perspective: 5cm;
+}
+
+.container {
+    /* perspective: 5cm; */
+    /* transform: perspective(5cm); */
     display: flex;
     flex-direction: column;
     justify-content: center;

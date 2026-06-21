@@ -3,14 +3,14 @@
 <html>
     <head>
         <title>aaa</title>
-        <link rel="stylesheet" href="main.css">
         <link rel="stylesheet" href="stuff.css">
+        <link rel="stylesheet" href="main.css">
     </head>
 
-    <body spellcheck="false" contenteditable>
-        <script src="htmlimport.js"></script>
-        <div class="page">
-            <p>
+    <body spellcheck="false" contenteditable="true">
+        <script src="imports.js"></script>
+        <div class="container" id="container">
+            <p class="victim">
                 stuff
                 <br>
                 god i cant code
@@ -19,13 +19,17 @@
                 here's a cool background
                 <br>
             </p>
-            <p id="coolperspective">
-                spinny text
-            </p>
-            <p>
+            <div id="coolperspectivewrapper">
+                <p id="coolperspective">
+                    spinny text
+                </p>
+            </div>
+            <p class="victim">
                 all of ts css btw
             </p>
         </div>
+
+        <script src="objectify.js"></script>
         <script src="main.js" defer></script>
     </body>
 </html>
