@@ -25,6 +25,10 @@ class Pos2D {
 }
 
 class Object {
+    static slamPow = 100000;
+    static slamX = 0;
+    static slamY = 0;
+    static slamBounceDecel = 0.3;
     static dragObject = null;
     static dragTimestamp = Date.now();
     static tickRate = 1 / 60;
@@ -82,8 +86,8 @@ class Object {
     }
 
     physics() {
-        let xFlip = false;
-        let yFlip = false;
+        let xScale = 1;
+        let yScale = 1;
 
         if (this.v.x > 1000000) this.v.x = 1000000;
         if (this.v.x < -1000000) this.v.x = -1000000;
@@ -93,31 +97,32 @@ class Object {
 
         if (this.pos.x < this.min.x) {
             this.pos.x = this.min.x;
-            xFlip = true;
+            xScale = Object.slamX == -1 ? -Object.slamBounceDecel : -Object.bounceDecel;
         }
 
         if (this.pos.x + this.rect.width > this.max.x) {
             this.pos.x = this.max.x - this.rect.width;
-            xFlip = true;
+            xScale = Object.slamX == 1 ? -Object.slamBounceDecel : -Object.bounceDecel;
         }
 
         if (this.pos.y < this.min.y) {
             this.pos.y = this.min.y;
-            yFlip = true;
+            yScale = Object.slamY == -1 ? -Object.slamBounceDecel : -Object.bounceDecel;
         }
 
         if (this.pos.y + this.rect.height > this.max.y) {
             this.pos.y = this.max.y - this.rect.height;
-            yFlip = true;
+            yScale = Object.slamY == 1 ? -Object.slamBounceDecel : -Object.bounceDecel;
         }
 
-        if (xFlip) {
-            this.v = new Pos2D(-this.v.x, this.v.y).scale(Object.bounceDecel);
-        }
+        // if (xFlip) {
+        //     this.v = new Pos2D(-this.v.x, this.v.y).scale(Object.bounceDecel);
+        // }
 
-        if (yFlip) {
-            this.v = new Pos2D(this.v.x, -this.v.y).scale(Object.bounceDecel);
-        }
+        // if (yFlip) {
+        //     this.v = new Pos2D(this.v.x, -this.v.y).scale(Object.bounceDecel);
+        // }
+        this.v = new Pos2D(xScale * this.v.x, yScale * this.v.y);
 
         this.checkCollisions();
         this.updatePos();
@@ -173,7 +178,7 @@ class Object {
         if (yIntersectLen <= 0) return;
 
         if (xIntersectLen < yIntersectLen) {
-            this.xFlip = true;
+            // this.xFlip = true;
             if (myRight == xIntersection[1]) { // RIGHT COLL
                 const midpoint = (myRight + yourLeft) / 2;
                 this.collisionOffset.addTo(midpoint - myRight, 0);
@@ -182,7 +187,7 @@ class Object {
                 this.collisionOffset.addTo(midpoint - myLeft, 0);
             }
         } else {
-            this.yFlip = true;
+            // this.yFlip = true;
             if (myBottom == yIntersection[1]) { // BOTTOM COLL
                 const midpoint = (myBottom + yourTop) / 2;
                 this.collisionOffset.addTo(0, midpoint - myBottom);
@@ -205,7 +210,7 @@ class Object {
         this.element.style.minWidth = `${this.rect.width}px`;
         this.element.style.minHeight = `${this.rect.height}px`;
         this.max = new Pos2D(innerWidth, innerHeight);
-        if (!this.dragging) this.accel(0, 670);
+        if (!this.dragging) this.accel(0 + Object.slamPow * Object.slamX, 670 + Object.slamPow * Object.slamY);
     }
 
     toggleSelectable(selectable) {
@@ -214,12 +219,12 @@ class Object {
         else this.element.classList.add('unselectable');
     }
     
-    static globalDrag() {
+    static setupListeners() {
         addEventListener('mouseup', (event) => {
             if (!Object.dragObject) return;
             Object.dragObject.dragging = false;
             Object.dragObject = null;
-        })
+        });
 
         addEventListener('mousemove', (event) => {
             if (!Object.dragObject) {
@@ -229,11 +234,47 @@ class Object {
             
             Object.dragObject.move(event.movementX, event.movementY, (Date.now() - this.dragTimestamp) / 1000, false);
             this.dragTimestamp = Date.now();
-        })
+        });
+
+        addEventListener('keydown', (event) => {
+            switch (event.key) {
+                case 'ArrowUp': {
+                    Object.slamY = -1;
+                    break;
+                }
+                case 'ArrowDown': {
+                    Object.slamY = 1;
+                    break;
+                }
+                case 'ArrowLeft': {
+                    Object.slamX = -1;
+                    break;
+                }
+                case 'ArrowRight': {
+                    Object.slamX = 1;
+                    break;
+                }
+            }
+        });
+
+        addEventListener('keyup', (event) => {
+            switch (event.key) {
+                case 'ArrowDown':
+                case 'ArrowUp': {
+                    Object.slamY = 0;
+                    break;
+                }
+                case 'ArrowLeft':
+                case 'ArrowRight': {
+                    Object.slamX = 0;
+                    break;
+                }
+            }
+        });
     }
 }
 
-Object.globalDrag();
+Object.setupListeners();
 
 const objects = [];
 let interval = setInterval(tick, 1000 / 60);
@@ -349,7 +390,7 @@ objectifier.addEventListener('mousedown', (event) => {
             break;
         };
         case 10 : {
-            nextText = 'ctrl+baskslash does something i rthink';
+            nextText = 'ctrl+baskslash does something i rthink\narrow key';
             break;
         };
         case 11 : {
