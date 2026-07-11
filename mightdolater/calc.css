@@ -1,0 +1,33 @@
+.calculatorcontainer {
+    border: 5px solid #607;
+    margin-left: 50px;
+    margin-right: 50px;
+    width: auto;
+    position: relative;
+}
+
+.calculator {
+    border: 5px solid #767;
+    width: fit-content;
+    height: fit-content;
+    margin: 10px;
+}
+
+.numentry {
+    padding-left: 5px;
+    padding-right: 5px;
+    font-family: monospace;
+    height: min-content;
+    &::-webkit-input-placeholder::before {
+        content: "0";
+    }
+}
+
+.matrix {
+    width: fit-content;
+    height: fit-content;
+    display: grid;
+    grid-template-rows: 2;
+    grid-template-columns: 2;
+    gap: 10px;
+}

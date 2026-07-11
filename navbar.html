@@ -8,12 +8,20 @@
     <div class="tab" id="tab3">
         doing
     </div>
+    <!-- <div class="tab" id="tab4">
+        calc
+    </div> -->
+    <div class="tab" id="tab4">
+        dim
+    </div>
 </div>
 
 <script>
     const mainTabButton = document.getElementById('tab1');
     const stuffTabButton = document.getElementById('tab2');
     const doingTabButton = document.getElementById('tab3');
+    // const calcTabButton = document.getElementById('tab4');
+    const dimTabButton = document.getElementById('tab4');
 
     mainTabButton.addEventListener('click', (event) => {
         location.href = '/index.html';
@@ -25,5 +33,13 @@
 
     doingTabButton.addEventListener('click', (event) => {
         location.href = '/doing.html';
+    });
+
+    // calcTabButton.addEventListener('click', (event) => {
+    //     location.href = '/calc.html';
+    // });
+
+    dimTabButton.addEventListener('click', (event) => {
+        location.href = '/dim.html';
     });
 </script>
