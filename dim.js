@@ -243,7 +243,6 @@ class AsciiCanvas {
         const rect = this.canvas.getBoundingClientRect();
         this.pxHeight = rect.height;
         this.pxWidth = rect.width;
-        console.log(this.pxWidth, this.pxHeight);
         this.canvas.style.borderWidth = borderWidth;
 
         this.textWidth = Math.floor(this.width / this.pxWidth);
@@ -268,7 +267,7 @@ class Perspective {
      * @param {*} cameraDistance distance from plane to camera, infty for orthorgraphic
      */
     constructor(cameraDistance) {
-        this.orthographic = (cameraDistance == Number.POSITIVE_INFINITY);
+        this.orthographic = cameraDistance == Number.POSITIVE_INFINITY || cameraDistance == Number.NEGATIVE_INFINITY;
         this.cameraDistance = cameraDistance;
     }
 
@@ -281,12 +280,38 @@ class Perspective {
 class Renderer {
     constructor(cameraPos, canvasWidth, canvasHeight, canvasElId) {
         this.diff = 0.01;
-        this.perspective = new Perspective(-cameraPos);
-        this.cameraPos = cameraPos;
-        if (canvasElId) {
-            this.canvasEl = new CanvasEl(canvasElId);
-        }
+        this.setCameraPos(cameraPos);
+        if (canvasElId)
+            this.setCanvasEl(canvasElId);
         this.canvas = new AsciiCanvas('canvas', canvasWidth, canvasHeight);
+        this.toggleShading(true);
+        this.setAbsShading(false);
+        this.setNormalSign(1);
+    }
+
+    setCameraPos(cameraPos) {
+        this.cameraPos = cameraPos;
+        this.perspective = new Perspective(cameraPos);
+    }
+
+    setCanvasEl(canvasElId) {
+        this.canvasEl = new CanvasEl(canvasElId);
+    }
+
+    removeCanvasEl() {
+        this.canvasEl = null;
+    }
+
+    toggleShading(shading) {
+        this.shading = shading;
+    }
+
+    setNormalSign(normalSign) {
+        this.normalSign = normalSign;
+    }
+
+    setAbsShading(absShading) {
+        this.absShading = absShading;
     }
 
     setSurfaceFunc(surfaceFunc, uLowerBound, uUpperBound, uDiff, vLowerBound, vUpperBound, vDiff) {
@@ -300,10 +325,10 @@ class Renderer {
     }
 
     normalFunc(u, v) {
-        const sU = surfaceFunc(u + this.diff, v).sub(surfaceFunc(u, v)).scale(1 / this.diff);
-        const sV = surfaceFunc(u, v + this.diff).sub(surfaceFunc(u, v)).scale(1 / this.diff);
+        const sU = this.surfaceFunc(u + this.diff, v).sub(this.surfaceFunc(u, v)).scale(1 / this.diff);
+        const sV = this.surfaceFunc(u, v + this.diff).sub(this.surfaceFunc(u, v)).scale(1 / this.diff);
         let crossProd = sU.cross(sV).scale(1);
-        return crossProd.scale(1 / crossProd.norm());
+        return crossProd.scale(this.normalSign / crossProd.norm());
     };
 
     render() {
@@ -312,12 +337,12 @@ class Renderer {
         for (let u = this.uLowerBound; u < this.uUpperBound; u += this.uDiff) {
             for (let v = this.vLowerBound; v < this.vUpperBound; v += this.vDiff) {
                 const point = this.surfaceFunc(u, v);
-                const normal = this.normalFunc(u, v);
                 const unitRay = this.cameraPos != Number.NEGATIVE_INFINITY ? unitVec(coords3(0, 0, this.cameraPos), point) : coords3(0, 0, 1);
                 const projection = this.perspective.project(point);
 
                 // from wikipedia it says the brightness is the cosine of the the included angle of the surface normal and the ray vector so dot product it is 
-                const brightness = unitRay.dot(normal);
+                let brightness = this.shading ? unitRay.dot(this.normalFunc(u, v)) : 1;
+                if (this.absShading) brightness = Math.abs(brightness);
                 if (brightness < 0) continue;
                 if (this.canvasEl)
                     this.canvasEl.drawPoint(projection.add(coords2(this.canvasEl.canvas.width / 2, this.canvasEl.canvas.height / 2)), valueToHex(brightness));
@@ -328,6 +353,7 @@ class Renderer {
         this.canvas.render();
     }
 }
+
 let cumRotMat = new Matrix(
     coords3(1, 0, 0),
     coords3(0, 1, 0),
@@ -339,40 +365,14 @@ let cumRotMat = new Matrix(
 // const canvasEl = new CanvasEl('canvasel');
 // const canvas = new AsciiCanvas('canvas', 500, 500);
 
-const r = 200;
-const R = 100;
-const surfaceFunc = (theta, phi) => cumRotMat.mult(coords3(
-    (r + R * Math.cos(phi)) * Math.cos(theta),
-    (r + R * Math.cos(phi)) * Math.sin(theta),
-    R * Math.sin(phi)
-));
-
-const renderer = new Renderer(Number.NEGATIVE_INFINITY, 700, 700, 'canvasel');
-renderer.setSurfaceFunc(surfaceFunc, 0, 2 * Math.PI, 0.04, 0, 2 * Math.PI, 0.08);
-
+const renderer = new Renderer(-1000, 700, 700);
+renderer.setSurfaceFunc(
+(u, v) => cumRotMat.mult(coords3(
+    (200 + 100 * Math.cos(v)) * Math.cos(u),
+    (200 + 100 * Math.cos(v)) * Math.sin(u),
+    100 * Math.sin(v)
+)), 0, 2 * Math.PI, 0.03, 0, 2 * Math.PI, 0.07);
 renderer.render();
-
-// function getRotMat(axis, angle) {
-//     const pitchRotMat = new Matrix(
-//         coords3(1, 0, 0),
-//         coords3(0, -Math.sin(angle), Math.cos(angle)),
-//         coords3(0, Math.cos(angle), Math.sin(angle))
-//     )
-
-//     if ()
-
-//     const iHat = coords3(1, 0, 0);
-//     let axis = coords3(1, 2, 3);
-//     axis = axis.scale(1 / axis.norm());
-//     const basisMatrix = new Matrix(
-//         unit(axis),
-//         unit(axis.cross(iHat)),
-//         unit(axis.scale(axis.dot(iHat)).sub(iHat))
-//     );
-
-//     const rotMat = basisMatrix.mult(pitchRotMat).mult(basisMatrix.transpose());
-//     return rotMat;
-// }
 
 let upKey = false;
 let downKey = false;
@@ -416,9 +416,84 @@ window.setInterval(() => {
     rotMat = rotMatY.matMult(rotMatX);
     cumRotMat = rotMat.matMult(cumRotMat);
     renderer.render();
-}, 60);
+}, 50);
+
+const canvasEditSurface = document.getElementById('editsurface');
+const canvasEditSurfaceWrapper = document.getElementById('editsurfacewrapper');
+canvasEditSurface.innerHTML = `(u, v) => cumRotMat.mult(coords3(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(200 + 100 * Math.cos(v)) * Math.cos(u),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(200 + 100 * Math.cos(v)) * Math.sin(u),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;100 * Math.sin(v)<br>
+));`;
+
+canvasEditSurface.addEventListener('onmousedown', (event) => {
+    if (event.key != 'Enter') return;
+    canvasEditSurface.textContent += '\n';
+    event.stopPropagation();
+});
+
+const canvasElToggle = document.getElementById('canvaseltoggle');
+canvasElToggle.addEventListener('change', (event) => {
+    if (canvasElToggle.checked) {
+        renderer.setCanvasEl('canvasel');
+        renderer.canvasEl.canvas.style.display = 'unset';
+        canvasEditSurfaceWrapper.style.display = 'flex';
+    } else {
+        renderer.canvasEl.canvas.style.display = 'none';
+        canvasEditSurfaceWrapper.style.display = 'none';
+        renderer.removeCanvasEl();
+    }
+});
+
+const canvasUpdate = document.getElementById('updatecanvas');
+// bools
+const canvasEditShading = document.getElementById('shadingtoggle');
+const canvasEditFlipShading = document.getElementById('flipshadingtoggle');
+const canvasEditAbsShading = document.getElementById('absshadingtoggle');
+// values
+const canvasEditULowerBound = document.getElementById('editulowerbound');
+const canvasEditUUpperBound = document.getElementById('edituupperbound');
+const canvasEditUStep = document.getElementById('editustep');
+const canvasEditVLowerBound = document.getElementById('editvlowerbound');
+const canvasEditVUpperBound = document.getElementById('editvupperbound');
+const canvasEditVStep = document.getElementById('editvstep');
+const canvasEditCameraPos = document.getElementById('editcamerapos');
+
+canvasEditShading.checked = true;
+canvasEditFlipShading.checked = false;
+canvasEditAbsShading.checked = false;
+
+canvasEditULowerBound.value = renderer.uLowerBound;
+canvasEditUUpperBound.value = renderer.uUpperBound;
+canvasEditVLowerBound.value = renderer.vLowerBound;
+canvasEditVUpperBound.value = renderer.vUpperBound;
+canvasEditUStep.value = renderer.uDiff;
+canvasEditVStep.value = renderer.vDiff;
+canvasEditCameraPos.value = renderer.cameraPos;
+
+canvasUpdate.addEventListener('click', (event) => {
+    const uLowerBound = eval(canvasEditULowerBound.value);
+    const uUpperBound = eval(canvasEditUUpperBound.value);
+    const uStep =       eval(canvasEditUStep.value);
+    const vLowerBound = eval(canvasEditVLowerBound.value);
+    const vUpperBound = eval(canvasEditVUpperBound.value);
+    const vStep =       eval(canvasEditVStep.value);
+    const cameraPos =   eval(canvasEditCameraPos.value);
+    const normalSign = canvasEditFlipShading.checked ? -1 : 1;
+    const shading = canvasEditShading.checked;
+    const absShading = canvasEditAbsShading.checked;
+    surfaceFunc = eval(canvasEditSurface.textContent);
+
+    renderer.setSurfaceFunc(surfaceFunc, uLowerBound, uUpperBound, uStep, vLowerBound, vUpperBound, vStep);
+    renderer.setCameraPos(cameraPos);
+    renderer.toggleShading(shading);
+    renderer.setAbsShading(absShading);
+    renderer.setNormalSign(normalSign);
+});
+
 
 // it's 5am i lit have to sleep
+// mf slept at 5:45am btw
 
 // const surfaceFunc = (theta, phi) => coords3(
 //     200 * Math.cos(theta) * Math.sin(phi),

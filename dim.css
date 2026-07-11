@@ -2,6 +2,13 @@ canvas {
     image-rendering: pixelated;
     background-color: #000;
     border: 1px solid #0f0;
+    display: none;
+}
+
+br {
+    display: block;
+    content: "";
+    margin: 0;
 }
 
 .asciicanvas {
@@ -9,13 +16,38 @@ canvas {
     padding: 0;
     font-size: 16px;
     line-height: 1;
+    height: fit-content;
+    width: fit-content;
+    margin: auto;
     font-family: 'Courier New', Courier, monospace;
     text-align: left;
     display: block;
 }
 
-br {
-    display: block;
-    content: "";
-    margin: 0;
+.canvascontainer {
+    display: flex;
+    flex-direction: row;
+}
+
+#editsurface {
+    width: max(200px, min-content);
+    height: max(100px, min-content);
+    font-family: monospace;
+    margin: auto;
+    text-align: left;
+
+    &>br {
+        display: unset;
+        content: "\n";
+        margin: 0;
+    }
+}
+
+#editsurfacewrapper {
+    display: none;
+    flex-direction: column;
+    border: 1px solid #90f;
+    width: max(200px, min-content);
+    height: max(100px, min-content);
+    text-align: left;
 }

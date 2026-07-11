@@ -11,10 +11,30 @@
         <script src="imports.js"></script>
         <div class="container" id="container">
             <p class="victim">
-                dim
+                dim, use arrow keys btw aaaaaaaaaa
             </p>
-            <div id="canvas" class="asciicanvas"></div>
-            <canvas id="canvasel" width="700" height="700"></canvas>
+            <div class="canvascontainer" contenteditable="false">
+                <div id="canvas" class="asciicanvas" contenteditable="true"></div>
+                <canvas id="canvasel" width="700" height="700"></canvas>
+            </div>
+            <div id="editsurfacewrapper" contenteditable="false">
+                <div id="editsurface" contenteditable="true"></div><br>
+                <div><input type="text" id="editulowerbound"> &leq; u &leq; <input type="text" id="edituupperbound">; step = <input type="text" id="editustep"></div>
+                <div><input type="text" id="editvlowerbound"> &leq; v &leq; <input type="text" id="editvupperbound">; step = <input type="text" id="editvstep"></div>
+                <div>camerapos = <input type="text" id="editcamerapos"></div>
+                <div id="buttons">
+                    <input type="checkbox" id="shadingtoggle" checked="true">
+                    <label for="shadingtoggle">shading</label>
+                    <input type="checkbox" id="flipshadingtoggle" checked="false">
+                    <label for="flipshadingtoggle">flip shading</label>
+                    <input type="checkbox" id="absshadingtoggle" checked="false">
+                    <label for="absshadingtoggle">absolute shading</label>
+                    <input type="button" value="update" id="updatecanvas">
+                </div>
+            </div>
+            <input type="checkbox" id="canvaseltoggle">
+            <label for="canvaseltoggle">expert mode</label>
+            <br>
         </div>
 
         <script src="objectify.js"></script>

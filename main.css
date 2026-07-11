@@ -21,19 +21,26 @@ body {
     margin-bottom: 0;
 }
 
-input {
-    background-color: #000;
-    width: 10px;
-    border: none;
-
-    &:focus {
-        border: none;
-    }
-}
-
 :focus {
     outline: none;
     border: none;
+}
+
+input[type="button"] {
+    background-color: #666;
+    border: none;
+    width: auto;
+    &:hover {
+        background-color: #333;
+    }
+}
+
+input[type="text"] {
+    background-color: #000;
+    border: 1px solid #00f;
+    border-radius: 2px;
+    width: 200px;
+    font-family: monospace;
 }
 
 .navbar {
