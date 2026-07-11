@@ -179,6 +179,7 @@ class AsciiCanvas {
         else if (brightness <= 0.8) list = ['3', '4', '5', '6'];
         else if (brightness <= 0.9) list = ['@', '$', '#', '&amp;', 'I', 'O', 'Q', 'D', '?'];
         else if (brightness <= 1.0) list = ['%', 'R', 'G', 'Z', 'W', 'M', 'N'];
+        else return '#';
         return list[Math.floor(rand * list.length) % list.length];
     }
 
@@ -339,7 +340,7 @@ class Renderer {
                 const point = this.surfaceFunc(u, v);
                 const unitRay = this.cameraPos != Number.NEGATIVE_INFINITY ? unitVec(coords3(0, 0, this.cameraPos), point) : coords3(0, 0, 1);
                 const projection = this.perspective.project(point);
-
+                
                 // from wikipedia it says the brightness is the cosine of the the included angle of the surface normal and the ray vector so dot product it is 
                 let brightness = this.shading ? unitRay.dot(this.normalFunc(u, v)) : 1;
                 if (this.absShading) brightness = Math.abs(brightness);
