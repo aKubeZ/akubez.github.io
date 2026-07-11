@@ -35,6 +35,7 @@ br {
     font-family: monospace;
     margin: auto;
     text-align: left;
+    display: inline-block;
 
     &>br {
         display: unset;

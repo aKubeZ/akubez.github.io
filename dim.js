@@ -426,10 +426,12 @@ canvasEditSurface.innerHTML = `(u, v) => cumRotMat.mult(coords3(<br>
 &nbsp;&nbsp;&nbsp;&nbsp;100 * Math.sin(v)<br>
 ));`;
 
-canvasEditSurface.addEventListener('onmousedown', (event) => {
-    if (event.key != 'Enter') return;
-    canvasEditSurface.textContent += '\n';
-    event.stopPropagation();
+canvasEditSurface.addEventListener('keydown', (event) => {
+    if (event.key == 'Enter') {
+        document.execCommand('insertHTML', false, '<br>');
+        event.preventDefault();
+        return false;
+    }
 });
 
 const canvasElToggle = document.getElementById('canvaseltoggle');
