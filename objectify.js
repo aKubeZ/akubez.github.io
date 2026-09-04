@@ -141,8 +141,6 @@ class Object {
     }
 
     checkCollisions() {
-        // oh god i have to code this now its 3:03 am....
-        // hollyyy shit i finished it at 4:29 am fuck fuck fuck
         this.collisionOffset = new Pos2D(0, 0);
         objects.forEach((object) => {
             if (object == this) return;
