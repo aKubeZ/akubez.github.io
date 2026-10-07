@@ -1,3 +1,5 @@
+// TYPESCRIPT IS A MUCH BETTER LANGUAGE WHATTTTTTTTTTT
+
 class Point3D {
     constructor(x, y, z) {
         this.x = x;
@@ -494,6 +496,28 @@ canvasUpdate.addEventListener('click', (event) => {
     renderer.setNormalSign(normalSign);
 });
 
+const mobileToggle = document.getElementById('mobiletoggle');
+const mobileWrapper = document.getElementById('mobilewrapper');
+const mobileButtonUp = document.getElementById('mobilebuttonup');
+const mobileButtonDown = document.getElementById('mobilebuttondown');
+const mobileButtonLeft = document.getElementById('mobilebuttonleft');
+const mobileButtonRight = document.getElementById('mobilebuttonright');
+// console.log(mobileButtonUp)
+mobileButtonUp.addEventListener('mousedown', () => upKey = true);
+mobileButtonUp.addEventListener('mouseup', () => upKey = false);
+mobileButtonUp.addEventListener('mouseout', () => upKey = false);
+mobileButtonDown.addEventListener('mousedown', () => downKey = true);
+mobileButtonDown.addEventListener('mouseup', () => downKey = false);
+mobileButtonDown.addEventListener('mouseout', () => downKey = false);
+mobileButtonLeft.addEventListener('mousedown', () => leftKey = true);
+mobileButtonLeft.addEventListener('mouseup', () => leftKey = false);
+mobileButtonLeft.addEventListener('mouseout', () => leftKey = false);
+mobileButtonRight.addEventListener('mousedown', () => rightKey = true);
+mobileButtonRight.addEventListener('mouseup', () => rightKey = false);
+mobileButtonRight.addEventListener('mouseout', () => rightKey = false);
+mobileToggle.addEventListener('change', (event) => {
+    mobileWrapper.style.display = mobileToggle.checked ? 'grid' : 'none';
+});
 
 // it's 5am i lit have to sleep
 // mf slept at 5:45am btw
